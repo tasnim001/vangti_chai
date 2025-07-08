@@ -27,7 +27,16 @@ class VangtiChaiHome extends StatefulWidget {
 
 class _VangtiChaiHomeState extends State<VangtiChaiHome> {
   String input = '';
-  Map<int, int> noteCounts = {};
+  Map<int, int> noteCounts = {
+    500: 0,
+    100: 0,
+    50: 0,
+    20: 0,
+    10: 0,
+    5: 0,
+    2: 0,
+    1: 0,
+  };
 
   final List<int> notes = [500, 100, 50, 20, 10, 5, 2, 1];
 
@@ -41,7 +50,25 @@ class _VangtiChaiHomeState extends State<VangtiChaiHome> {
   void clearInput() {
     setState(() {
       input = '';
-      noteCounts.clear();
+      noteCounts = {
+        500: 0,
+        100: 0,
+        50: 0,
+        20: 0,
+        10: 0,
+        5: 0,
+        2: 0,
+        1: 0,
+      };
+    });
+  }
+
+  void backspace() {
+    setState(() {
+      if (input.isNotEmpty) {
+        input = input.substring(0, input.length - 1);
+        calculateNotes();
+      }
     });
   }
 
@@ -76,7 +103,7 @@ class _VangtiChaiHomeState extends State<VangtiChaiHome> {
             children: [
               Text("Taka: $input", style: const TextStyle(fontSize: AppSizes.textLarge)),
               const SizedBox(height: AppSizes.spacing),
-              Expanded(child: buildKeypad()),
+              Expanded(child: buildKeypad(context)),
             ],
           ),
         )
@@ -96,9 +123,9 @@ class _VangtiChaiHomeState extends State<VangtiChaiHome> {
             children: [
               Expanded(child: buildNoteTable()),
               Container(
-                width: 220,
+                width: 300,
                 padding: const EdgeInsets.all(AppSizes.paddingMedium),
-                child: buildKeypad(),
+                child: buildKeypad(context),
               ),
             ],
           ),
@@ -118,14 +145,15 @@ class _VangtiChaiHomeState extends State<VangtiChaiHome> {
     );
   }
 
-  Widget buildKeypad() {
+  Widget buildKeypad(BuildContext context) {
+    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
     return Column(
       children: [
         Expanded(
           child: GridView.count(
-            crossAxisCount: 3,
+            crossAxisCount: isPortrait ? 3 : 5,
             mainAxisSpacing: AppSizes.paddingSmall,
             crossAxisSpacing: AppSizes.paddingSmall,
             children: keys.map((key) {
@@ -151,21 +179,28 @@ class _VangtiChaiHomeState extends State<VangtiChaiHome> {
           ),
         ),
         const SizedBox(height: AppSizes.spacing),
-        ElevatedButton(
-          onPressed: clearInput,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            minimumSize: const Size(120, 50),
-          ),
-          child: const Text(
-            'C',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: AppSizes.textLarge,
-              fontWeight: FontWeight.bold,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: backspace,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Icon(Icons.backspace, color: Colors.white),
             ),
-          ),
+            ElevatedButton(
+              onPressed: clearInput,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Icon(Icons.clear, color: Colors.white)
+            ),
+          ],
         ),
       ],
     );
