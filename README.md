@@ -1,6 +1,6 @@
 # vangti_chai
 
-A new Flutter project.
+CSE489 - LAB assignment 01
 
 ## Getting Started
 
